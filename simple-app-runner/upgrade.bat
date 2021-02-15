@@ -1,0 +1,1 @@
+helm upgrade --install <app-chart-release-name> -n <namespace> -f values.yaml .

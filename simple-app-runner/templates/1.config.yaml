@@ -1,0 +1,16 @@
+{{- if gt (len .Values.app.configs) 0 -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "app.fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{- range $i, $config := .Values.app.configs }}
+  {{ $config.name }}: |-
+{{ $config.content | indent 4 }}
+{{- end }}
+{{- end -}}

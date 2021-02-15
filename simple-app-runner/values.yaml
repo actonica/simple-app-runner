@@ -1,0 +1,73 @@
+## Default values for Redmine Helm Chart.
+## This is a YAML-formatted file.
+## Declare variables to be passed into your templates.
+
+## Default values for Redmine
+##
+app:
+  replicas: 1
+  recreatePod: false
+
+  ## Image configuration.
+  image:
+    repository: "hello-world"
+    tag: "latest"
+#    pullPolicy: "Always"
+#    pullSecret: ""
+
+  ## Resource configuration.
+  resources: {}
+  #  requests:
+  #    memory: "256Mi"
+  #    cpu: "300m"
+  #  limits:
+  #    memory: "512Mi"
+  #    cpu: "500m"
+
+# here to provide config map files
+  configs: {}
+  #  - name: appsettings.json
+  #    path: /app
+  #    content: |-
+  #      {
+  #        "Logging": {
+  #          "LogLevel": {
+  #            "Default": "Debug",
+  #            "System": "Information",
+  #            "Microsoft": "Information"
+  #          }
+  #        },
+  #        "ConnectionStrings": {
+  #          "DefaultConnection": "server=1.2.3.4;port=3306;database=passbolt;user=passbolt;password=password;"
+  #        },
+  #        "FirebaseAuth": [
+  #          {
+  #          "Audience": "passbolt-public-client",
+  #          "Issuer": "https://securetoken.google.com/passbolt-public-client"
+  #          }
+  #        ]
+  #      }  
+
+# here to provide secrets files
+  secrets: {}
+    # - name: secret-name
+    #   value: value-as-is-do-not-encode
+
+  ## Service configuration.
+  ##
+  service:
+    type: "ClusterIP"
+#    port: "80"
+
+  ## Ingress settings
+  ## tls - true will enable: 
+  ## - tlsSecretName configured - will use custom SSL cert
+  ## - letsEncrypt enabled - will use LE
+  ingress:
+    enabled: true
+    tls: true
+    serverName: server.k1.domain.tld
+#    path: /app
+#    tlsSecretName: ""
+    letsEncrypt: true
+    annotations: {}

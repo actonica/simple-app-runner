@@ -1,0 +1,1 @@
+e:\kubectl\helm template . -f values.yaml -n app-chart-namespace 1> template.yaml

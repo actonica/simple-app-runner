@@ -1,0 +1,1 @@
+D:\kubectl\helm delete --namespace <namespace> <app-chart-release-name>
