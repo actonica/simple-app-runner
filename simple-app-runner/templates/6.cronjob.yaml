@@ -1,0 +1,60 @@
+{{- if .Values.app.cronjob.enabled -}}
+kind: CronJob
+apiVersion: apps/v1
+metadata:
+  name: {{ template "app.fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  schedule: {{ .Values.app.cronjob.schedule | quote }}
+  successfulJobsHistoryLimit: {{ .Values.app.cronjob.successfulJobsHistoryLimit | default "1" }}
+  failedJobsHistoryLimit: {{ .Values.app.cronjob.failedJobsHistoryLimit | default "1" }}
+  concurrencyPolicy: {{ .Values.app.cronjob.concurrencyPolicy | default "Forbid" }}
+  jobTemplate:
+    spec:
+      backoffLimit: {{ .Values.app.cronjob.backoffLimit | default "0" }}
+      template:
+        metadata:
+          labels:
+            app: {{ template "app.fullname" . }}
+{{- if .Values.app.recreatePod }}
+          annotations: 
+            timestamp: {{ now | date "2006-01-02T15:04:05Z" | quote }}
+{{- end }}
+        spec:
+{{- if .Values.app.image.pullSecret }}
+          imagePullSecrets:
+            - name: {{ .Values.app.image.pullSecret }}
+{{- end }}
+          containers:
+            - name: {{ .Chart.Name | quote }}
+              image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
+{{- if .Values.app.image.pullPolicy }}
+              imagePullPolicy: {{ .Values.app.image.pullPolicy }}
+{{- end }}
+#          command: ['/bin/sh', '-c', 'while true; do echo hello; sleep 10;done']
+{{- if .Values.app.resources }}
+              resources:
+{{ toYaml .Values.app.resources | indent 16 }}
+{{- end }}
+{{- if gt (len .Values.app.configs) 0 }}              
+              volumeMounts:
+{{- range $i, $config := .Values.app.configs }}
+                - name: config{{ $i | add1 }}
+                  mountPath: {{ $config.path }}/{{ $config.name }}
+                  subPath: {{ $config.name }}
+                  readOnly: true
+{{- end }}
+{{- end }}
+{{- if gt (len .Values.app.configs) 0 }}
+          volumes:
+{{- range $i, $config := .Values.app.configs }}
+            - name: config{{ $i | add1 }}
+              configMap:
+                name: {{ template "app.fullname" $ }}
+{{- end }}
+{{- end }}
+{{- end -}}

@@ -1,3 +1,4 @@
+{{- if not .Values.app.cronjob.enabled -}}
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -64,3 +65,4 @@ spec:
             name: {{ template "app.fullname" $ }}
 {{- end }}
 {{- end }}
+{{- end -}}
