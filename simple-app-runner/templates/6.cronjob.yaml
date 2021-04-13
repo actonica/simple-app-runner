@@ -1,6 +1,6 @@
 {{- if .Values.app.cronjob.enabled -}}
 kind: CronJob
-apiVersion: apps/v1
+apiVersion: batch/v1beta1
 metadata:
   name: {{ template "app.fullname" . }}
   labels:
