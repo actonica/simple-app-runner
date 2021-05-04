@@ -23,6 +23,9 @@ metadata:
 {{- if .Values.app.ingress.path }}
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 {{- end }}
+{{- if .Values.app.ingress.permanentRedirect }}
+    nginx.ingress.kubernetes.io/permanent-redirect-code: '{{ .Values.app.ingress.permanentRedirect }}'
+{{- end }}
 {{- if .Values.app.ingress.annotations }}
 {{ toYaml .Values.app.ingress.annotations | indent 4 }}
 {{- end }}

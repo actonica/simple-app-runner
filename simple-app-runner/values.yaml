@@ -74,4 +74,5 @@ app:
 #    path: /app
 #    tlsSecretName: ""
     letsEncrypt: true
+    permanentRedirect: 301
     annotations: {}
