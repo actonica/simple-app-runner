@@ -26,6 +26,9 @@ metadata:
 {{- if .Values.app.ingress.permanentRedirect }}
     nginx.ingress.kubernetes.io/permanent-redirect-code: '{{ .Values.app.ingress.permanentRedirect }}'
 {{- end }}
+{{- if .Values.app.ingress.whiteListIPs }}
+    nginx.ingress.kubernetes.io/whitelist-source-range: '{{ .Values.app.ingress.whiteListIPs }}'
+{{- end }}
 {{- if .Values.app.ingress.annotations }}
 {{ toYaml .Values.app.ingress.annotations | indent 4 }}
 {{- end }}

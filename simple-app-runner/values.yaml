@@ -76,3 +76,4 @@ app:
     letsEncrypt: true
     permanentRedirect: 301
     annotations: {}
+#    whiteListIPs: "1.2.3.4/32"
