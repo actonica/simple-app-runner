@@ -14,6 +14,7 @@ app:
     tag: "latest"
 #    pullPolicy: "Always"
 #    pullSecret: ""
+#    command: "/bin/sh -c 'while true; do echo hello; sleep 10;done'"
 
   cronjob:
     enabled: false
@@ -97,3 +98,14 @@ app:
     #   preserveHost: false
     #   annotations: {}
     #   servicePort: 443
+
+  volumes: []
+    # - name: "vol1"
+    #   spec:
+    #     persistentVolumeClaim:
+    #       claimName: claim1
+
+  volumeMounts: []
+    # - name: "vol1"
+    #   mountPath: /vol1
+    #   subPath: /sub1
