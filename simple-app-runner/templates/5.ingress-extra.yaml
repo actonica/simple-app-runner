@@ -1,0 +1,82 @@
+{{- if .Values.app.ingressExtra }}
+{{- range $index, $ingress := .Values.app.ingressExtra }}
+{{- if gt $index 0 }}
+---
+{{- end }}
+{{- $name := printf "%s-%s" (include "app.fullname" $) $ingress.name }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $name }}
+  labels:
+    app: {{ template "name" $ }}
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+{{- if $ingress.tls }}
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+{{- end }}
+{{- if $ingress.letsEncrypt }}
+    certmanager.k8s.io/cluster-issuer: letsencrypt
+    cert-manager.io/cluster-issuer: letsencrypt
+    kubernetes.io/tls-acme: 'true'
+    nginx.ingress.kubernetes.io/tls-acme: 'true'
+{{- end }}
+    nginx.ingress.kubernetes.io/proxy-body-size: 512m
+{{- if $ingress.path }}
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+{{- end }}
+{{- if $ingress.permanentRedirect }}
+    nginx.ingress.kubernetes.io/permanent-redirect-code: '{{ $ingress.permanentRedirect }}'
+{{- end }}
+{{- if $ingress.whiteListIPs }}
+    nginx.ingress.kubernetes.io/whitelist-source-range: '{{ $ingress.whiteListIPs }}'
+{{- end }}
+{{- if $ingress.backendHttps }}
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+{{- end }}
+{{- if $ingress.annotations }}
+{{ toYaml $ingress.annotations | indent 4 }}
+{{- end }}
+spec:
+{{- if $ingress.tls }}
+  tls:
+  - hosts:
+{{- if $ingress.serverName }}
+    - {{ $ingress.serverName }}
+{{- else }}
+    - {{ $.Values.app.ingress.serverName }}
+{{- end }}
+{{- if $ingress.tlsSecretName }}
+{{- if eq ($ingress.tlsSecretName | toString) "-" }}
+    secretName: {{ printf "%s-%s" "tls" (include "app.fullname" $) }}
+{{- else }}
+    secretName: {{ $ingress.tlsSecretName }}
+{{- end }}
+{{- else }}
+    secretName: {{ printf "%s-%s-%s" "tls" $ingress.serverName $ingress.name }}
+{{- end }}
+{{- end }}
+  rules:
+{{- if $ingress.serverName }}
+  - host: {{ $ingress.serverName }}
+{{- else }}
+  - host: {{ $.Values.app.ingress.serverName }}
+{{- end }}
+    http:
+      paths:
+{{- if $ingress.path }}
+      - path: {{ $ingress.path }}(/|$)(.*)
+{{- else }}
+      - path: /
+{{- end }}
+        pathType: Prefix
+        backend:
+          service: 
+            name: {{ $name }}
+            port:
+              number: {{ $ingress.servicePort }}
+{{- end }}
+{{- end -}}

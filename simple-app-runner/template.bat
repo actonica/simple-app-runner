@@ -1,1 +1,1 @@
-e:\kubectl\helm template . -f values.yaml -n app-chart-namespace 1> template.yaml
+helm template . -f values.yaml -n app-chart-namespace --set app.service.extra[0].name=images --set app.service.extra[0].spec.type=ExternalName --set app.service.extra[0].spec.externalName=server.com --set app.ingressExtra[0].name=images --set app.ingressExtra[0].path=/images --set app.ingressExtra[0].servicePort=443 --set app.ingressExtra[0].backendHttps=true 1> template.yaml

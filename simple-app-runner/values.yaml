@@ -62,6 +62,11 @@ app:
   service:
     type: "ClusterIP"
 #    port: "80"
+    extra: []
+      # - name: images
+      #   spec:
+      #     type: ExternalName
+      #     externalName: server.domain.tld
 
   ## Ingress settings
   ## tls - true will enable: 
@@ -75,5 +80,18 @@ app:
 #    tlsSecretName: ""
     letsEncrypt: true
     permanentRedirect: 301
-    annotations: {}
 #    whiteListIPs: "1.2.3.4/32"
+    annotations: {}
+    
+  ingressExtra: []
+    # - name: images
+    #   serverName: server.k1.domain.tld
+    #   tls: true
+    #   path: /images
+    #   tlsSecretName: "-"
+    #   letsEncrypt: false
+    #   # permanentRedirect: 301
+    #   # whiteListIPs: "1.2.3.4/32"
+    #   backendHttps: true
+    #   annotations: {}
+    #   servicePort: 443

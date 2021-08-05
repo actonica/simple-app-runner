@@ -1,0 +1,19 @@
+{{- if .Values.app.service.extra }}
+{{- range $index, $svc := .Values.app.service.extra }}
+{{- if gt $index 0 }}
+---
+{{- end }}
+{{- $name := printf "%s-%s" (include "app.fullname" $) $svc.name }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}
+  labels:
+    app: {{ template "name" $ }}
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+spec:
+{{ toYaml $svc.spec | indent 2 }}
+{{- end }}
+{{- end -}}
