@@ -73,7 +73,7 @@ spec:
       - path: /
 {{- end }}
         backend:
-          serviceName: {{ template "app.fullname" . }}
+          serviceName: {{ $name }}
           servicePort: {{ $ingress.servicePort }}
 {{- end }}
 {{- end -}}
