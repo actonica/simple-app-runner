@@ -88,6 +88,7 @@ app:
     #   serverName: server.k1.domain.tld
     #   tls: true
     #   path: /images
+    #   rewriteTo: /$2
     #   tlsSecretName: "-"
     #   letsEncrypt: false
     #   # permanentRedirect: 301
