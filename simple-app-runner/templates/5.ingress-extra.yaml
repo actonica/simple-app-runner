@@ -37,6 +37,13 @@ metadata:
 {{- if $ingress.backendHttps }}
     nginx.ingress.kubernetes.io/backend-protocol: HTTPS
 {{- end }}
+{{- if $ingress.preserveHost }}
+{{- if $ingress.serverName }}
+    nginx.ingress.kubernetes.io/upstream-vhost: {{ $ingress.serverName }}
+{{- else }}
+    nginx.ingress.kubernetes.io/upstream-vhost: {{ $.Values.app.ingress.serverName }}
+{{- end }}
+{{- end }}
 {{- if $ingress.annotations }}
 {{ toYaml $ingress.annotations | indent 4 }}
 {{- end }}

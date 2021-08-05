@@ -91,8 +91,9 @@ app:
     #   rewriteTo: /$2
     #   tlsSecretName: "-"
     #   letsEncrypt: false
-    #   # permanentRedirect: 301
-    #   # whiteListIPs: "1.2.3.4/32"
+    #   permanentRedirect: 301
+    #   whiteListIPs: "1.2.3.4/32"
     #   backendHttps: true
+    #   preserveHost: false
     #   annotations: {}
     #   servicePort: 443
