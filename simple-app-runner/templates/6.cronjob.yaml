@@ -36,13 +36,21 @@ spec:
 {{- if .Values.app.image.pullPolicy }}
               imagePullPolicy: {{ .Values.app.image.pullPolicy }}
 {{- end }}
-#          command: ['/bin/sh', '-c', 'while true; do echo hello; sleep 10;done']
 {{- if .Values.app.resources }}
               resources:
 {{ toYaml .Values.app.resources | indent 16 }}
 {{- end }}
-{{- if gt (len .Values.app.configs) 0 }}              
+{{- if or .Values.app.secrets (or .Values.app.configs .Values.app.volumes) }}           
               volumeMounts:
+{{- if .Values.app.secrets }}
+{{- range $i, $secrets := .Values.app.secrets }}
+                - name: secret{{ $i | add1 }}
+                  mountPath: {{ $secrets.path }}/{{ $secrets.name }}
+                  subPath: {{ $secrets.name }}
+                  readOnly: true
+{{- end }}
+{{- end }}
+{{- if .Values.app.configs }}
 {{- range $i, $config := .Values.app.configs }}
                 - name: config{{ $i | add1 }}
                   mountPath: {{ $config.path }}/{{ $config.name }}
@@ -50,12 +58,37 @@ spec:
                   readOnly: true
 {{- end }}
 {{- end }}
-{{- if gt (len .Values.app.configs) 0 }}
+{{- if .Values.app.volumes }}
+{{- range $i, $volume := .Values.app.volumes }}
+                - name: volume{{ $i | add1 }}-{{ $volume.name }}
+                  mountPath: {{ $volume.mountPath }}
+{{- if $volume.subPath }}
+                  subPath: {{ $volume.subPath }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- if or .Values.app.secrets (or .Values.app.configs .Values.app.volumes) }}
           volumes:
+{{- if .Values.app.secrets }}
+{{- range $i, $secret := .Values.app.secrets }}
+            - name: secret{{ $i | add1 }}
+              secret:
+                name: {{ template "app.fullname" $ }}
+{{- end }}
+{{- end }}
+{{- if .Values.app.configs }}
 {{- range $i, $config := .Values.app.configs }}
             - name: config{{ $i | add1 }}
               configMap:
                 name: {{ template "app.fullname" $ }}
+{{- end }}
+{{- end }}
+{{- if .Values.app.volumes }}
+{{- range $i, $volume := .Values.app.volumes }}
+        - name: volume{{ $i | add1 }}-{{ $volume.name }}
+{{ toYaml $volume.spec | indent 10 }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end -}}

@@ -73,7 +73,6 @@ spec:
 {{- end }}
 {{- end }}
 {{- end }}
-{{- end }}
           livenessProbe:
             tcpSocket:
               port: app-http
@@ -99,6 +98,7 @@ spec:
 {{- range $i, $volume := .Values.app.volumes }}
         - name: volume{{ $i | add1 }}-{{ $volume.name }}
 {{ toYaml $volume.spec | indent 10 }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end -}}
