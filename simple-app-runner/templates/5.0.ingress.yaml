@@ -1,0 +1,54 @@
+{{- if and .Values.app.ingress.enabled (not .Values.app.cronjob.enabled) -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "app.fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+{{- if .Values.app.ingress.tls }}
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+{{- end }}
+{{- if .Values.app.ingress.letsEncrypt }}
+    certmanager.k8s.io/cluster-issuer: letsencrypt
+    cert-manager.io/cluster-issuer: letsencrypt
+    kubernetes.io/tls-acme: 'true'
+    nginx.ingress.kubernetes.io/tls-acme: 'true'
+{{- end }}
+    nginx.ingress.kubernetes.io/proxy-body-size: 512m
+{{- if .Values.app.ingress.path }}
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+{{- end }}
+{{- if .Values.app.ingress.permanentRedirect }}
+    nginx.ingress.kubernetes.io/permanent-redirect-code: '{{ .Values.app.ingress.permanentRedirect }}'
+{{- end }}
+{{- if .Values.app.ingress.whiteListIPs }}
+    nginx.ingress.kubernetes.io/whitelist-source-range: '{{ .Values.app.ingress.whiteListIPs }}'
+{{- end }}
+{{- if .Values.app.ingress.annotations }}
+{{ toYaml .Values.app.ingress.annotations | indent 4 }}
+{{- end }}
+spec:
+{{- if .Values.app.ingress.tls }}
+  tls:
+  - hosts:
+    - {{ .Values.app.ingress.serverName }}
+    secretName: {{ .Values.app.ingress.tlsSecretName | default (printf "%s-%s" "tls" (include "app.fullname" .)) }}
+{{- end }}
+  rules:
+  - host: {{ .Values.app.ingress.serverName }}
+    http:
+      paths:
+{{- if .Values.app.ingress.path }}
+      - path: {{ .Values.app.ingress.path }}(/|$)(.*)
+{{- else }}
+      - path: /
+{{- end }}
+        backend:
+          serviceName: {{ template "app.fullname" . }}
+          servicePort: {{ .Values.app.service.port | default "80" }}
+{{- end -}}

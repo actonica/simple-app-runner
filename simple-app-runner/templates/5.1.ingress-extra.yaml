@@ -1,5 +1,5 @@
-{{- if .Values.app.ingressExtra }}
-{{- range $index, $ingress := .Values.app.ingressExtra }}
+{{- if .Values.app.ingress.extra }}
+{{- range $index, $ingress := .Values.app.ingress.extra }}
 {{- if gt $index 0 }}
 ---
 {{- end }}

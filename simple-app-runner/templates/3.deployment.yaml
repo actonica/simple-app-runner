@@ -45,7 +45,7 @@ spec:
             - name: app-http
               containerPort: 80
               protocol: TCP
-{{- if or .Values.app.secrets (or .Values.app.configs .Values.app.volumeMounts) }}       
+{{- if or .Values.app.secrets (or .Values.app.configs .Values.app.volumes) }}
           volumeMounts:
 {{- if .Values.app.secrets }}
 {{- range $i, $secrets := .Values.app.secrets }}
@@ -63,8 +63,8 @@ spec:
               readOnly: true
 {{- end }}
 {{- end }}
-{{- if .Values.app.volumeMounts }}
-{{- range $i, $volume := .Values.app.volumeMounts }}
+{{- if .Values.app.volumes }}
+{{- range $i, $volume := .Values.app.volumes }}
             - name: volume{{ $i | add1 }}-{{ $volume.name }}
               mountPath: {{ $volume.mountPath }}
 {{- if $volume.subPath }}

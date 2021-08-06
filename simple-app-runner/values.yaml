@@ -30,7 +30,7 @@ app:
   #    cpu: "500m"
 
 # here to provide config map files
-  configs: {}
+  configs: []
   #  - name: appsettings.json
   #    path: /app
   #    content: |-
@@ -54,16 +54,24 @@ app:
   #      }  
 
 # here to provide secrets files
-  secrets: {}
+  secrets: []
     # - name: secret-name
     #   value: value-as-is-do-not-encode
+
+  volumes: []
+    # - name: "vol1"
+    #   mountPath: /vol1
+    #   subPath: /sub1
+    #   spec:
+    #     persistentVolumeClaim:
+    #       claimName: claim1
 
   ## Service configuration.
   ##
   service:
     type: "ClusterIP"
 #    port: "80"
-    extra: []
+    extra: {}
       # - name: images
       #   spec:
       #     type: ExternalName
@@ -83,29 +91,17 @@ app:
     permanentRedirect: 301
 #    whiteListIPs: "1.2.3.4/32"
     annotations: {}
-    
-  ingressExtra: []
-    # - name: images
-    #   serverName: server.k1.domain.tld
-    #   tls: true
-    #   path: /images
-    #   rewriteTo: /$2
-    #   tlsSecretName: "-"
-    #   letsEncrypt: false
-    #   permanentRedirect: 301
-    #   whiteListIPs: "1.2.3.4/32"
-    #   backendHttps: true
-    #   preserveHost: false
-    #   annotations: {}
-    #   servicePort: 443
-
-  volumes: []
-    # - name: "vol1"
-    #   spec:
-    #     persistentVolumeClaim:
-    #       claimName: claim1
-
-  volumeMounts: []
-    # - name: "vol1"
-    #   mountPath: /vol1
-    #   subPath: /sub1
+    extra: {}
+      # - name: images
+      #   serverName: server.k1.domain.tld
+      #   tls: true
+      #   path: /images
+      #   rewriteTo: /$2
+      #   tlsSecretName: "-"
+      #   letsEncrypt: false
+      #   permanentRedirect: 301
+      #   whiteListIPs: "1.2.3.4/32"
+      #   backendHttps: true
+      #   preserveHost: false
+      #   annotations: {}
+      #   servicePort: 443
