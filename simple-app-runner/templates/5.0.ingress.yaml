@@ -14,8 +14,10 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 {{- end }}
 {{- if .Values.app.ingress.letsEncrypt }}
-    certmanager.k8s.io/cluster-issuer: letsencrypt
-    cert-manager.io/cluster-issuer: letsencrypt
+{{- if .Values.app.ingress.clusterIssuer }}
+    certmanager.k8s.io/cluster-issuer: {{ .Values.app.ingress.clusterIssuer | quote }}
+    cert-manager.io/cluster-issuer: {{ .Values.app.ingress.clusterIssuer | quote }}
+{{- end }}
     kubernetes.io/tls-acme: 'true'
     nginx.ingress.kubernetes.io/tls-acme: 'true'
 {{- end }}

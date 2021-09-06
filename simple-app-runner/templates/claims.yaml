@@ -1,0 +1,30 @@
+{{- if .Values.app.claims }}
+{{- range $index, $claim := .Values.app.claims }}
+{{- if gt $index 0 }}
+---
+{{- end }}
+{{- $name := printf "%s-%s" (include "app.fullname" $) $claim.name }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ $name }}
+  labels:
+    app: {{ template "name" $ }}
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+{{- if and ($claim.storageClass) (ne "-" $claim.storageClass) }}
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "{{ $claim }}"
+{{- end }}
+spec:
+  accessModes:
+    - {{ $claim.accessMode }}
+  resources:
+    requests:
+      storage: {{ $claim.size }}
+{{- if and ($claim.storageClass) (eq "-" $claim.storageClass) }}
+  storageClassName: ""
+{{- end }}
+{{- end }}
+{{- end -}}

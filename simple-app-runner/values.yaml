@@ -16,6 +16,13 @@ app:
 #    pullSecret: ""
 #    command: "/bin/sh -c 'while true; do echo hello; sleep 10;done'"
 
+  initContainer: {}
+    # image:
+    #   repository: "busybox"
+    #   tag: "latest"
+    #   pullPolicy: "Always"
+    #   command: ""
+
   cronjob:
     enabled: false
     schedule: "*/5 * * * *"
@@ -29,7 +36,12 @@ app:
   #    memory: "512Mi"
   #    cpu: "500m"
 
-# here to provide config map files
+  ## Environment variables
+  env: {}
+  #  VAR1: "value1"
+  #  VAR2: "value2"
+
+  ## here to provide config map files
   configs: []
   #  - name: appsettings.json
   #    path: /app
@@ -53,7 +65,7 @@ app:
   #        ]
   #      }  
 
-# here to provide secrets files
+  ## here to provide secrets files
   secrets: []
     # - name: secret-name
     #   value: value-as-is-do-not-encode
@@ -62,6 +74,7 @@ app:
     # - name: "vol1"
     #   mountPath: /vol1
     #   subPath: /sub1
+    #   claimName: claim1
     #   spec:
     #     persistentVolumeClaim:
     #       claimName: claim1
@@ -85,11 +98,12 @@ app:
     enabled: true
     tls: true
     serverName: server.k1.domain.tld
-#    path: /app
-#    tlsSecretName: ""
+    # path: /app
+    # tlsSecretName: ""
     letsEncrypt: true
-    permanentRedirect: 301
-#    whiteListIPs: "1.2.3.4/32"
+    # clusterIssuer: "letsencrypt"
+    # permanentRedirect: 301
+    # whiteListIPs: "1.2.3.4/32"
     annotations: {}
     extra: {}
       # - name: images
@@ -105,3 +119,10 @@ app:
       #   preserveHost: false
       #   annotations: {}
       #   servicePort: 443
+
+  ## Claims for persistence
+  claims:
+    - name: claim1
+      accessMode: "ReadWriteOnce"
+      size: 10G
+      storageClass: "-"

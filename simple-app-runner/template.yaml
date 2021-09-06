@@ -1,0 +1,148 @@
+---
+# Source: simple-app-runner/templates/1.config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: simple-app-runner-RELEASE-NAME
+  labels:
+    app: simple-app-runner
+    chart: "simple-app-runner-1.13"
+    release: RELEASE-NAME
+    heritage: Helm
+data:
+  appsettings.json: |-
+    a123
+---
+# Source: simple-app-runner/templates/claims.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: simple-app-runner-RELEASE-NAME-claim1
+  labels:
+    app: simple-app-runner
+    chart: "simple-app-runner-1.13"
+    release: RELEASE-NAME
+    heritage: Helm
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10G
+  storageClassName: ""
+---
+# Source: simple-app-runner/templates/4.0.service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-app-runner-RELEASE-NAME
+  labels:
+    app: simple-app-runner
+    chart: "simple-app-runner-1.13"
+    release: RELEASE-NAME
+    heritage: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: app-http
+      protocol: TCP
+  selector:
+    app: simple-app-runner-RELEASE-NAME
+---
+# Source: simple-app-runner/templates/3.deployment.yaml
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: simple-app-runner-RELEASE-NAME
+  labels:
+    app: simple-app-runner
+    chart: "simple-app-runner-1.13"
+    release: RELEASE-NAME
+    heritage: Helm
+spec:
+  selector:
+    matchLabels:
+      app: simple-app-runner-RELEASE-NAME
+  replicas: 1
+  strategy:
+    type: Recreate 
+  template:
+    metadata:
+      labels:
+        app: simple-app-runner-RELEASE-NAME
+    spec:
+      initContainers:
+        - name: "simple-app-runner-init"
+          image: "busybox:latest"
+          env:
+            VAVVVR2: valssddue2
+            VXXXAR1: valussse1
+          volumeMounts:
+            - name: config1
+              mountPath: /app/appsettings.json
+              subPath: appsettings.json
+              readOnly: true
+            - name: volume1-nfs-1
+              mountPath: /export
+      containers:
+        - name: "simple-app-runner"
+          image: "hello-world:latest"
+          env:
+            VAVVVR2: valssddue2
+            VXXXAR1: valussse1
+          ports:
+            - name: app-http
+              containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - name: config1
+              mountPath: /app/appsettings.json
+              subPath: appsettings.json
+              readOnly: true
+            - name: volume1-nfs-1
+              mountPath: /export
+          livenessProbe:
+            tcpSocket:
+              port: app-http
+            initialDelaySeconds: 300
+            timeoutSeconds: 30
+      volumes:
+        - name: config1
+          configMap:
+            name: simple-app-runner-RELEASE-NAME
+        - name: volume1-nfs-1
+          spec:
+            persistentVolumeClaim:
+              claimName: simple-app-runner-RELEASE-NAME-claim1
+---
+# Source: simple-app-runner/templates/5.0.ingress.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: simple-app-runner-RELEASE-NAME
+  labels:
+    app: simple-app-runner
+    chart: "simple-app-runner-1.13"
+    release: RELEASE-NAME
+    heritage: Helm
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/tls-acme: 'true'
+    nginx.ingress.kubernetes.io/tls-acme: 'true'
+    nginx.ingress.kubernetes.io/proxy-body-size: 512m
+    nginx.ingress.kubernetes.io/permanent-redirect-code: 301
+spec:
+  tls:
+  - hosts:
+    - server.k1.domain.tld
+    secretName: tls-simple-app-runner-RELEASE-NAME
+  rules:
+  - host: server.k1.domain.tld
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: simple-app-runner-RELEASE-NAME
+          servicePort: 80

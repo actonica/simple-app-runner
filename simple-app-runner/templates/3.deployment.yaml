@@ -28,6 +28,49 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.app.image.pullSecret }}
 {{- end }}
+{{- if .Values.app.initContainer }}
+      initContainers:
+        - name: {{ (printf "%s-init" .Chart.Name) | quote }}
+          image: "{{ .Values.app.initContainer.image.repository }}:{{ .Values.app.initContainer.image.tag }}"
+{{- if .Values.app.initContainer.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.app.initContainer.image.pullPolicy }}
+{{- end }}
+{{- if .Values.app.image.command }}
+          command: [ {{ .Values.app.initContainer.image.command | quote }} ] #['/bin/sh', '-c', 'while true; do echo hello; sleep 10;done']
+{{- end }}
+{{- if .Values.app.env }}
+          env:
+{{ toYaml .Values.app.env | indent 12 }}
+{{- end }}
+{{- if or .Values.app.secrets (or .Values.app.configs .Values.app.volumes) }}
+          volumeMounts:
+{{- if .Values.app.secrets }}
+{{- range $i, $secret := .Values.app.secrets }}
+            - name: secret{{ $i | add1 }}
+              mountPath: {{ $secret.path }}/{{ $secret.name }}
+              subPath: {{ $secret.name }}
+              readOnly: true
+{{- end }}
+{{- end }}
+{{- if .Values.app.configs }}
+{{- range $i, $config := .Values.app.configs }}
+            - name: config{{ $i | add1 }}
+              mountPath: {{ $config.path }}/{{ $config.name }}
+              subPath: {{ $config.name }}
+              readOnly: true
+{{- end }}
+{{- end }}
+{{- if .Values.app.volumes }}
+{{- range $i, $volume := .Values.app.volumes }}
+            - name: volume{{ $i | add1 }}-{{ $volume.name }}
+              mountPath: {{ $volume.mountPath }}
+{{- if $volume.subPath }}
+              subPath: {{ $volume.subPath }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
       containers:
         - name: {{ .Chart.Name | quote }}
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
@@ -41,6 +84,10 @@ spec:
           resources:
 {{ toYaml .Values.app.resources | indent 12 }}
 {{- end }}
+{{- if .Values.app.env }}
+          env:
+{{ toYaml .Values.app.env | indent 12 }}
+{{- end }}
           ports:
             - name: app-http
               containerPort: 80
@@ -48,10 +95,10 @@ spec:
 {{- if or .Values.app.secrets (or .Values.app.configs .Values.app.volumes) }}
           volumeMounts:
 {{- if .Values.app.secrets }}
-{{- range $i, $secrets := .Values.app.secrets }}
+{{- range $i, $secret := .Values.app.secrets }}
             - name: secret{{ $i | add1 }}
-              mountPath: {{ $secrets.path }}/{{ $secrets.name }}
-              subPath: {{ $secrets.name }}
+              mountPath: {{ $secret.path }}/{{ $secret.name }}
+              subPath: {{ $secret.name }}
               readOnly: true
 {{- end }}
 {{- end }}
@@ -97,7 +144,14 @@ spec:
 {{- if .Values.app.volumes }}
 {{- range $i, $volume := .Values.app.volumes }}
         - name: volume{{ $i | add1 }}-{{ $volume.name }}
+{{- if $volume.spec }}
 {{ toYaml $volume.spec | indent 10 }}
+{{- end }}
+{{- if $volume.claimName }}
+          spec:
+            persistentVolumeClaim:
+              claimName: {{ printf "%s-%s" (include "app.fullname" $) $volume.claimName }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
