@@ -154,9 +154,8 @@ spec:
 {{ toYaml $volume.spec | indent 10 }}
 {{- end }}
 {{- if $volume.claimName }}
-          spec:
-            persistentVolumeClaim:
-              claimName: {{ printf "%s-%s" (include "app.fullname" $) $volume.claimName }}
+          persistentVolumeClaim:
+            claimName: {{ printf "%s-%s" (include "app.fullname" $) $volume.claimName }}
 {{- end }}
 {{- end }}
 {{- end }}
