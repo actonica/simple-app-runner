@@ -1,1 +1,1 @@
-helm template . -f values.yaml -n app-chart-namespace --set app.recreatePod=true > template.yaml
+helm template . -f values.yaml -n app-chart-namespace --set app.recreatePod=true --set app.env.VAR111=asd33 > template.yaml

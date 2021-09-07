@@ -1,18 +1,4 @@
 ---
-# Source: simple-app-runner/templates/1.config.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: simple-app-runner-RELEASE-NAME
-  labels:
-    app: simple-app-runner
-    chart: "simple-app-runner-1.13"
-    release: RELEASE-NAME
-    heritage: Helm
-data:
-  appsettings.json: |-
-    a123
----
 # Source: simple-app-runner/templates/claims.yaml
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -20,7 +6,7 @@ metadata:
   name: simple-app-runner-RELEASE-NAME-claim1
   labels:
     app: simple-app-runner
-    chart: "simple-app-runner-1.13"
+    chart: "simple-app-runner-1.14"
     release: RELEASE-NAME
     heritage: Helm
 spec:
@@ -38,7 +24,7 @@ metadata:
   name: simple-app-runner-RELEASE-NAME
   labels:
     app: simple-app-runner
-    chart: "simple-app-runner-1.13"
+    chart: "simple-app-runner-1.14"
     release: RELEASE-NAME
     heritage: Helm
 spec:
@@ -57,7 +43,7 @@ metadata:
   name: simple-app-runner-RELEASE-NAME
   labels:
     app: simple-app-runner
-    chart: "simple-app-runner-1.13"
+    chart: "simple-app-runner-1.14"
     release: RELEASE-NAME
     heritage: Helm
 spec:
@@ -71,50 +57,24 @@ spec:
     metadata:
       labels:
         app: simple-app-runner-RELEASE-NAME
+      annotations: 
+        timestamp: "2021-09-07T09:51:31Z"
     spec:
-      initContainers:
-        - name: "simple-app-runner-init"
-          image: "busybox:latest"
-          env:
-            VAVVVR2: valssddue2
-            VXXXAR1: valussse1
-          volumeMounts:
-            - name: config1
-              mountPath: /app/appsettings.json
-              subPath: appsettings.json
-              readOnly: true
-            - name: volume1-nfs-1
-              mountPath: /export
       containers:
         - name: "simple-app-runner"
           image: "hello-world:latest"
           env:
-            VAVVVR2: valssddue2
-            VXXXAR1: valussse1
+            - name: VAR111
+              value: asd33
           ports:
             - name: app-http
               containerPort: 80
               protocol: TCP
-          volumeMounts:
-            - name: config1
-              mountPath: /app/appsettings.json
-              subPath: appsettings.json
-              readOnly: true
-            - name: volume1-nfs-1
-              mountPath: /export
           livenessProbe:
             tcpSocket:
               port: app-http
             initialDelaySeconds: 300
             timeoutSeconds: 30
-      volumes:
-        - name: config1
-          configMap:
-            name: simple-app-runner-RELEASE-NAME
-        - name: volume1-nfs-1
-          spec:
-            persistentVolumeClaim:
-              claimName: simple-app-runner-RELEASE-NAME-claim1
 ---
 # Source: simple-app-runner/templates/5.0.ingress.yaml
 apiVersion: extensions/v1beta1
@@ -123,7 +83,7 @@ metadata:
   name: simple-app-runner-RELEASE-NAME
   labels:
     app: simple-app-runner
-    chart: "simple-app-runner-1.13"
+    chart: "simple-app-runner-1.14"
     release: RELEASE-NAME
     heritage: Helm
   annotations:
@@ -132,7 +92,6 @@ metadata:
     kubernetes.io/tls-acme: 'true'
     nginx.ingress.kubernetes.io/tls-acme: 'true'
     nginx.ingress.kubernetes.io/proxy-body-size: 512m
-    nginx.ingress.kubernetes.io/permanent-redirect-code: 301
 spec:
   tls:
   - hosts:
