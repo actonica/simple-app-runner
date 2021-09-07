@@ -13,16 +13,16 @@ metadata:
     chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
     release: {{ $.Release.Name }}
     heritage: {{ $.Release.Service }}
-{{- if and ($claim.storageClass) (ne "-" $claim.storageClass) }}
-  annotations:
-    volume.beta.kubernetes.io/storage-class: "{{ $claim.storageClass }}"
-{{- end }}
 spec:
   accessModes:
     - {{ $claim.accessMode }}
   resources:
     requests:
       storage: {{ $claim.size }}
+
+{{- if and ($claim.storageClass) (ne "-" $claim.storageClass) }}
+  storageClassName: {{ $claim.storageClass | quote }}
+{{- end }}
 {{- if and ($claim.storageClass) (eq "-" $claim.storageClass) }}
   storageClassName: ""
 {{- end }}
