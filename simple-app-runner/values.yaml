@@ -121,8 +121,8 @@ app:
       #   servicePort: 443
 
   ## Claims for persistence
-  claims:
-    - name: claim1
-      accessMode: "ReadWriteOnce"
-      size: 10G
-      storageClass: "-"
+  claims: {}
+    # - name: claim1
+    #   accessMode: "ReadWriteOnce"
+    #   size: 10G
+    #   storageClass: "-"

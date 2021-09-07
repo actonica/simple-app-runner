@@ -15,7 +15,7 @@ metadata:
     heritage: {{ $.Release.Service }}
 {{- if and ($claim.storageClass) (ne "-" $claim.storageClass) }}
   annotations:
-    volume.beta.kubernetes.io/storage-class: "{{ $claim }}"
+    volume.beta.kubernetes.io/storage-class: "{{ $claim.storageClass }}"
 {{- end }}
 spec:
   accessModes:

@@ -2,7 +2,7 @@ apiVersion: v1
 home: http://www.actonica.ru
 description: A particular application Helm chart for Kubernetes.
 name: simple-app-runner
-version: "1.16"
+version: "1.17"
 sources:
   - https://github.com/actonica/app-chart
 maintainers:
