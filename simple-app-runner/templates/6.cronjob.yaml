@@ -40,6 +40,13 @@ spec:
               resources:
 {{ toYaml .Values.app.resources | indent 16 }}
 {{- end }}
+{{- if .Values.app.env }}
+              env:
+{{- range $key, $value := .Values.app.env }}
+                - name: {{ $key }}
+                  value: {{ $value | quote }}
+{{- end }}
+{{- end }}
 {{- if or .Values.app.secrets (or .Values.app.configs .Values.app.volumes) }}           
               volumeMounts:
 {{- if .Values.app.secrets }}
