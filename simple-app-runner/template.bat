@@ -13,6 +13,10 @@ rem    --set app.ingressExtra[0].servicePort=443 ^
 helm template . -f values.yaml -n app-chart-namespace ^
   --set app.env.VXXXAR1=valussse1 ^
   --set app.env.VAVVVR2=valssddue2 ^
+  --set app.tolerations[0].key=ecomm ^
+  --set app.tolerations[0].operator=Equal ^
+  --set app.tolerations[0].value=prod ^
+  --set app.tolerations[0].effect=NoSchedule ^
   --set app.ingress.annotations.nginx\.ingress\.kubernetes\.io\/permanent-redirect-code=301 ^
   --set app.initContainer.image.repository=busybox ^
   --set app.initContainer.image.tag=latest ^

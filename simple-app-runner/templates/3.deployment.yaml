@@ -28,6 +28,10 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.app.image.pullSecret }}
 {{- end }}
+{{- if .Values.app.tolerations }}
+      tolerations:
+{{ toYaml .Values.app.tolerations | indent 8 }}
+{{- end }}
 {{- if .Values.app.initContainer }}
       initContainers:
         - name: {{ (printf "%s-init" .Chart.Name) | quote }}

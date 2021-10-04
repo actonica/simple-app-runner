@@ -23,6 +23,8 @@ app:
     #   pullPolicy: "Always"
     #   command: ""
 
+  tolerations: []
+
   cronjob:
     enabled: false
     schedule: "*/5 * * * *"
