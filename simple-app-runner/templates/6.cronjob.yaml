@@ -81,7 +81,7 @@ spec:
 {{- range $i, $secret := .Values.app.secrets }}
             - name: secret{{ $i | add1 }}
               secret:
-                name: {{ template "app.fullname" $ }}
+                secretName: {{ template "app.fullname" $ }}
 {{- end }}
 {{- end }}
 {{- if .Values.app.configs }}
