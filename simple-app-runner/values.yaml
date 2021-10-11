@@ -71,6 +71,8 @@ app:
   secrets: []
     # - name: secret-name
     #   value: value-as-is-do-not-encode
+    #   path: "/path"
+  # secretsType: "kubernetes.io/dockerconfigjson"
 
   volumes: []
     # - name: "vol1"

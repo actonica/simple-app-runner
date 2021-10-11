@@ -50,11 +50,13 @@ spec:
 {{- if or .Values.app.secrets (or .Values.app.configs .Values.app.volumes) }}           
               volumeMounts:
 {{- if .Values.app.secrets }}
-{{- range $i, $secrets := .Values.app.secrets }}
+{{- range $i, $secret := .Values.app.secrets }}
+{{- if $secret.path }}
                 - name: secret{{ $i | add1 }}
-                  mountPath: {{ $secrets.path }}/{{ $secrets.name }}
-                  subPath: {{ $secrets.name }}
+                  mountPath: {{ $secret.path }}/{{ $secret.name }}
+                  subPath: {{ $secret.name }}
                   readOnly: true
+{{- end }}
 {{- end }}
 {{- end }}
 {{- if .Values.app.configs }}
@@ -79,9 +81,11 @@ spec:
           volumes:
 {{- if .Values.app.secrets }}
 {{- range $i, $secret := .Values.app.secrets }}
+{{- if $secret.path }}
             - name: secret{{ $i | add1 }}
               secret:
                 secretName: {{ template "app.fullname" $ }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- if .Values.app.configs }}
