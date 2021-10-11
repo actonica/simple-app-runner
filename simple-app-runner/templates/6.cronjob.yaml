@@ -37,7 +37,7 @@ spec:
               imagePullPolicy: {{ .Values.app.image.pullPolicy }}
 {{- end }}
 {{- if .Values.app.image.command }}
-          command: [ {{ .Values.app.image.command | quote }} ] #['/bin/sh', '-c', 'while true; do echo hello; sleep 10;done']
+              command: [ {{ .Values.app.image.command | quote }} ] #['/bin/sh', '-c', 'while true; do echo hello; sleep 10;done']
 {{- end }}
 {{- if .Values.app.resources }}
               resources:
