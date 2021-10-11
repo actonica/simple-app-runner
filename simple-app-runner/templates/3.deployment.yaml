@@ -39,8 +39,11 @@ spec:
 {{- if .Values.app.initContainer.image.pullPolicy }}
           imagePullPolicy: {{ .Values.app.initContainer.image.pullPolicy }}
 {{- end }}
-{{- if .Values.app.image.command }}
-          command: [ {{ .Values.app.initContainer.image.command | quote }} ] #['/bin/sh', '-c', 'while true; do echo hello; sleep 10;done']
+{{- if .Values.app.initContainer.image.command }}
+          command: #[ {{ .Values.app.initContainer.image.command | quote }} ] #['/bin/sh', '-c', 'while true; do echo hello; sleep 10;done']
+{{- range $cmd := .Values.app.initContainer.image.command }}
+            - {{ $cmd | quote }}
+{{- end }}
 {{- end }}
 {{- if .Values.app.env }}
           env:
@@ -85,7 +88,10 @@ spec:
           imagePullPolicy: {{ .Values.app.image.pullPolicy }}
 {{- end }}
 {{- if .Values.app.image.command }}
-          command: [ {{ .Values.app.image.command | quote }} ] #['/bin/sh', '-c', 'while true; do echo hello; sleep 10;done']
+          command: #[ {{ .Values.app.image.command | quote }} ] #['/bin/sh', '-c', 'while true; do echo hello; sleep 10;done']
+{{- range $cmd := .Values.app.image.command }}
+            - {{ $cmd | quote }}
+{{- end }}
 {{- end }}
 {{- if .Values.app.resources }}
           resources:

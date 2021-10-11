@@ -14,14 +14,17 @@ app:
     tag: "latest"
 #    pullPolicy: "Always"
 #    pullSecret: ""
-#    command: "/bin/sh -c 'while true; do echo hello; sleep 10;done'"
+    command: []
+      # - "/bin/sh"
+      # - "-c"
+      # - "while true; do echo hello; sleep 10;done"
 
   initContainer: {}
     # image:
     #   repository: "busybox"
     #   tag: "latest"
     #   pullPolicy: "Always"
-    #   command: ""
+    #   command: []
 
   tolerations: []
 
