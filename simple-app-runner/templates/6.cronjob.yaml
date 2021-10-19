@@ -50,7 +50,11 @@ spec:
               env:
 {{- range $key, $value := .Values.app.env }}
                 - name: {{ $key }}
+{{- if kindIs "string" $value }}
                   value: {{ $value | quote }}
+{{- else }}
+{{ toYaml $value | indent 18 }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- if or .Values.app.secrets (or .Values.app.configs .Values.app.volumes) }}           
@@ -103,8 +107,14 @@ spec:
 {{- end }}
 {{- if .Values.app.volumes }}
 {{- range $i, $volume := .Values.app.volumes }}
-        - name: volume{{ $i | add1 }}-{{ $volume.name }}
-{{ toYaml $volume.spec | indent 10 }}
+            - name: volume{{ $i | add1 }}-{{ $volume.name }}
+{{- if $volume.spec }}
+{{ toYaml $volume.spec | indent 14 }}
+{{- end }}
+{{- if $volume.claimName }}
+              persistentVolumeClaim:
+                claimName: {{ printf "%s-%s" (include "app.fullname" $) $volume.claimName }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

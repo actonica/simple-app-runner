@@ -11,12 +11,13 @@ rem    --set app.ingressExtra[0].path=/images ^
 rem    --set app.ingressExtra[0].servicePort=443 ^
 
 helm template . -f values.yaml -n app-chart-namespace ^
-  --set app.livenessProbe.initialDelaySeconds=100 ^
-  --set app.livenessProbe.timeoutSeconds=5 ^
+  --set app.cronjob.enabled=true ^
   --set app.service.containerPort=3306 ^
   --set app.service.port=3306 ^
   --set app.env.VXXXAR1=valussse1 ^
   --set app.env.VAVVVR2=valssddue2 ^
+  --set app.env.VAROBj1.valueFrom.secretKeyRef.name=secret-name ^
+  --set app.env.VAROBj1.valueFrom.secretKeyRef.key=secret-key ^
   --set app.tolerations[0].key=ecomm ^
   --set app.tolerations[0].operator=Equal ^
   --set app.tolerations[0].value=prod ^

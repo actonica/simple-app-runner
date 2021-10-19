@@ -49,7 +49,11 @@ spec:
           env:
 {{- range $key, $value := .Values.app.env }}
             - name: {{ $key }}
+{{- if kindIs "string" $value }}
               value: {{ $value | quote }}
+{{- else }}
+{{ toYaml $value | indent 14 }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- if or .Values.app.secrets (or .Values.app.configs .Values.app.volumes) }}
@@ -101,7 +105,11 @@ spec:
           env:
 {{- range $key, $value := .Values.app.env }}
             - name: {{ $key }}
+{{- if kindIs "string" $value }}
               value: {{ $value | quote }}
+{{- else }}
+{{ toYaml $value | indent 14 }}
+{{- end }}
 {{- end }}
 {{- end }}
           ports:
