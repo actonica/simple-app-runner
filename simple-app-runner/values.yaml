@@ -28,6 +28,8 @@ app:
 
   tolerations: []
 
+  livenessProbe: {}
+
   cronjob:
     enabled: false
     schedule: "*/5 * * * *"
@@ -90,7 +92,8 @@ app:
   ##
   service:
     type: "ClusterIP"
-#    port: "80"
+    # containerPort: 80
+    # port: "80"
     extra: {}
       # - name: images
       #   spec:

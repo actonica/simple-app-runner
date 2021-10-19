@@ -105,8 +105,8 @@ spec:
 {{- end }}
 {{- end }}
           ports:
-            - name: app-http
-              containerPort: 80
+            - name: app-port
+              containerPort: {{ .Values.app.service.containerPort | default "80" }}
               protocol: TCP
 {{- if or .Values.app.secrets (or .Values.app.configs .Values.app.volumes) }}
           volumeMounts:
@@ -140,9 +140,13 @@ spec:
 {{- end }}
           livenessProbe:
             tcpSocket:
-              port: app-http
+              port: app-port
+{{- if .Values.app.livenessProbe }}
+{{ toYaml .Values.app.livenessProbe | indent 12 }}
+{{- else }}
             initialDelaySeconds: 300
             timeoutSeconds: 30
+{{- end }}
 {{- if or .Values.app.secrets (or .Values.app.configs .Values.app.volumes) }}
       volumes:
 {{- if .Values.app.secrets }}

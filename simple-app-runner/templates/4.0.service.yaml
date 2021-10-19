@@ -12,7 +12,7 @@ spec:
   type: {{ .Values.app.service.type }}
   ports:
     - port: {{ .Values.app.service.port | default "80" }}
-      targetPort: app-http
+      targetPort: app-port
       protocol: TCP
   selector:
     app: {{ template "app.fullname" . }}

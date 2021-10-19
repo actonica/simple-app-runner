@@ -11,6 +11,10 @@ rem    --set app.ingressExtra[0].path=/images ^
 rem    --set app.ingressExtra[0].servicePort=443 ^
 
 helm template . -f values.yaml -n app-chart-namespace ^
+  --set app.livenessProbe.initialDelaySeconds=100 ^
+  --set app.livenessProbe.timeoutSeconds=5 ^
+  --set app.service.containerPort=3306 ^
+  --set app.service.port=3306 ^
   --set app.env.VXXXAR1=valussse1 ^
   --set app.env.VAVVVR2=valssddue2 ^
   --set app.tolerations[0].key=ecomm ^
