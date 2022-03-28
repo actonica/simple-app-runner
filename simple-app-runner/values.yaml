@@ -128,6 +128,7 @@ app:
       #   backendHttps: true
       #   preserveHost: false
       #   annotations: {}
+      #   serviceName: "serviceName"
       #   servicePort: 443
 
   ## Claims for persistence

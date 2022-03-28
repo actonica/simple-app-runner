@@ -20,7 +20,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- printf "%s" .Release.Name -}}
 {{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- printf "%s-%s" $name .Release.Name -}}
+{{- printf "%s-%s" .Release.Name $name -}}
 {{- end -}}
 {{- end -}}
 
