@@ -33,6 +33,9 @@ app:
   cronjob:
     enabled: false
     schedule: "*/5 * * * *"
+    # jobTemplate:
+    #   spec:
+    #     activeDeadlineSeconds: 120
 
   ## Resource configuration.
   resources: {}
