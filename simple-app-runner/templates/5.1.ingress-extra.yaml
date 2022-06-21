@@ -82,9 +82,9 @@ spec:
         backend:
           serviceName: {{ $ingress.serviceName | $name }}
 {{- if $ingress.backendHttps }}
-          servicePort: {{ $ingress.servicePort | 443 }}
+          servicePort: {{ $ingress.servicePort | default "443" }}
 {{- else }}
-          servicePort: {{ $ingress.servicePort | 80 }}
+          servicePort: {{ $ingress.servicePort | default "80" }}
 {{- end }}
 {{- end }}
 {{- end -}}
