@@ -80,7 +80,7 @@ spec:
       - path: /
 {{- end }}
         backend:
-          serviceName: {{ $ingress.serviceName | $name }}
+          serviceName: {{ $ingress.serviceName | default $name }}
 {{- if $ingress.backendHttps }}
           servicePort: {{ $ingress.servicePort | default "443" }}
 {{- else }}
