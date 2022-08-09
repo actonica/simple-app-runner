@@ -79,12 +79,14 @@ spec:
 {{- else }}
       - path: /
 {{- end }}
+        pathType: ImplementationSpecific
         backend:
-          serviceName: {{ $ingress.serviceName | default $name }}
+          name: {{ $ingress.serviceName | default $name }}
+          port:
 {{- if $ingress.backendHttps }}
-          servicePort: {{ $ingress.servicePort | default "443" }}
+            number: {{ $ingress.servicePort | default "443" }}
 {{- else }}
-          servicePort: {{ $ingress.servicePort | default "80" }}
+            number: {{ $ingress.servicePort | default "80" }}
 {{- end }}
 {{- end }}
 {{- end -}}
