@@ -52,7 +52,8 @@ spec:
 {{- end }}
         pathType: ImplementationSpecific
         backend:
-          name: {{ template "app.fullname" . }}
-          port:
-            number: {{ .Values.app.service.port | default "80" }}
+          service:
+            name: {{ template "app.fullname" . }}
+            port:
+              number: {{ .Values.app.service.port | default "80" }}
 {{- end -}}
