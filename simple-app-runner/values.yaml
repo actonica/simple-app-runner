@@ -111,6 +111,7 @@ app:
     enabled: true
     tls: true
     serverName: server.k1.domain.tld
+    # bluegreen: "blue" or "green"
     # path: /app
     # tlsSecretName: ""
     letsEncrypt: true
