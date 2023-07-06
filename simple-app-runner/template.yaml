@@ -81,7 +81,7 @@ spec:
             timeoutSeconds: 30
 ---
 # Source: simple-app-runner/templates/5.0.ingress.yaml
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: simple-app-runner-RELEASE-NAME
