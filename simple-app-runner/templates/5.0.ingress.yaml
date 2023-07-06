@@ -1,5 +1,5 @@
 {{- if and .Values.app.ingress.enabled (not .Values.app.cronjob.enabled) -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ template "app.fullname" . }}
@@ -9,6 +9,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
+{{- if .Values.app.ingress.bluegreen }}
+    bluegreen-active: {{ .Values.app.ingress.bluegreen | quote }}
+{{- end }}
     kubernetes.io/ingress.class: nginx
 {{- if .Values.app.ingress.tls }}
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -22,6 +25,7 @@ metadata:
     nginx.ingress.kubernetes.io/tls-acme: 'true'
 {{- end }}
     nginx.ingress.kubernetes.io/proxy-body-size: 512m
+    nginx.org/client-max-body-size: 512m
 {{- if .Values.app.ingress.path }}
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 {{- end }}
@@ -50,7 +54,10 @@ spec:
 {{- else }}
       - path: /
 {{- end }}
+        pathType: ImplementationSpecific
         backend:
-          serviceName: {{ template "app.fullname" . }}
-          servicePort: {{ .Values.app.service.port | default "80" }}
+          service:
+            name: {{ template "app.fullname" . }}
+            port:
+              number: {{ .Values.app.service.port | default "80" }}
 {{- end -}}

@@ -4,7 +4,7 @@
 ---
 {{- end }}
 {{- $name := printf "%s-%s" (include "app.fullname" $) $ingress.name }}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $name }}
@@ -14,6 +14,9 @@ metadata:
     release: {{ $.Release.Name }}
     heritage: {{ $.Release.Service }}
   annotations:
+{{- if $ingress.bluegreen }}
+    bluegreen-active: {{ $ingress.bluegreen | quote }}
+{{- end }}
     kubernetes.io/ingress.class: nginx
 {{- if $ingress.tls }}
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -79,12 +82,15 @@ spec:
 {{- else }}
       - path: /
 {{- end }}
+        pathType: ImplementationSpecific
         backend:
-          serviceName: {{ $ingress.serviceName | default $name }}
+          service:
+            name: {{ $ingress.serviceName | default $name }}
+            port:
 {{- if $ingress.backendHttps }}
-          servicePort: {{ $ingress.servicePort | default "443" }}
+              number: {{ $ingress.servicePort | default "443" }}
 {{- else }}
-          servicePort: {{ $ingress.servicePort | default "80" }}
+              number: {{ $ingress.servicePort | default "80" }}
 {{- end }}
 {{- end }}
 {{- end -}}
