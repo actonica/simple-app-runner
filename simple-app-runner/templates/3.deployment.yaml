@@ -14,11 +14,15 @@ spec:
       app: {{ template "app.fullname" . }}
   replicas: {{ .Values.app.replicas }}
   strategy:
+{{- if .Values.app.RollingUpdate }}
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 1
-  minReadySeconds: 30
+      maxUnavailable: {{ .Values.app.maxUnavailable | default "1" }}
+      maxSurge: {{ .Values.app.maxSurge | default "1" }}
+  minReadySeconds: {{ .Values.app.minReadySeconds | default "30" }}
+{{- else }}
+    type: Recreate 
+{{- end }}
   template:
     metadata:
       labels:
