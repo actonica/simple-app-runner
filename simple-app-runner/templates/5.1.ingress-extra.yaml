@@ -78,7 +78,7 @@ spec:
     http:
       paths:
 {{- if $ingress.path }}
-      - path: {{ $ingress.path }}(/|$)(.*)
+      - path: {{ $ingress.path }}
 {{- else }}
       - path: /
 {{- end }}
