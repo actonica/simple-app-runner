@@ -27,7 +27,10 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: 512m
     nginx.org/client-max-body-size: 512m
 {{- if .Values.app.ingress.path }}
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+{{- end }}
+{{- if and .Values.app.ingress.path .Values.app.ingress.rewriteTo }}
+    nginx.ingress.kubernetes.io/rewrite-target: {{ .Values.app.ingress.rewriteTo }}
 {{- end }}
 {{- if .Values.app.ingress.permanentRedirect }}
     nginx.ingress.kubernetes.io/permanent-redirect-code: '{{ .Values.app.ingress.permanentRedirect }}'
@@ -50,7 +53,7 @@ spec:
     http:
       paths:
 {{- if .Values.app.ingress.path }}
-      - path: {{ .Values.app.ingress.path }}
+      - path: {{ .Values.app.ingress.path }}(/|$)(.*)
 {{- else }}
       - path: /
 {{- end }}

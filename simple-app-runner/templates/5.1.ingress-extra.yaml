@@ -28,6 +28,9 @@ metadata:
     nginx.ingress.kubernetes.io/tls-acme: 'true'
 {{- end }}
     nginx.ingress.kubernetes.io/proxy-body-size: 512m
+{{- if $ingress.path }}
+    nginx.ingress.kubernetes.io/use-regex: "true"
+{{- end }}
 {{- if and $ingress.path $ingress.rewriteTo }}
     nginx.ingress.kubernetes.io/rewrite-target: {{ $ingress.rewriteTo }}
 {{- end }}
@@ -78,7 +81,7 @@ spec:
     http:
       paths:
 {{- if $ingress.path }}
-      - path: {{ $ingress.path }}
+      - path: {{ $ingress.path }}(/|$)(.*)
 {{- else }}
       - path: /
 {{- end }}
