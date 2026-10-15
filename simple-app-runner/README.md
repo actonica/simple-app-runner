@@ -28,3 +28,22 @@ $ helm install --name sample-release actonica-charts/simple-app-runner --set app
 
 > Note - If you do not specify a name, helm will select a name for you.
 
+## Health checks
+
+* `app.livenessProbe` - by default a tcpSocket check of `app-port` (initialDelaySeconds: 300, timeoutSeconds: 30). Timing-only values keep the tcpSocket check; a handler (`httpGet`, `tcpSocket`, `exec`, `grpc`) replaces it.
+* `app.readinessProbe`, `app.startupProbe` - rendered as-is, only when set.
+
+```console
+$ helm upgrade --install sample-release actonica-charts/simple-app-runner --wait --timeout 3m \
+    --set app.livenessProbe.httpGet.path=/health \
+    --set app.livenessProbe.httpGet.port=app-port \
+    --set app.readinessProbe.httpGet.path=/health \
+    --set app.readinessProbe.httpGet.port=app-port \
+    --set app.startupProbe.httpGet.path=/health \
+    --set app.startupProbe.httpGet.port=app-port \
+    --set app.startupProbe.periodSeconds=5 \
+    --set app.startupProbe.failureThreshold=24
+```
+
+Keep `--timeout` above the startup window (`periodSeconds` x `failureThreshold`, 2 minutes here) plus image pull time.
+

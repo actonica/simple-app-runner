@@ -28,7 +28,28 @@ app:
 
   tolerations: []
 
+  ## Liveness probe. Empty - tcpSocket check of app-port with initialDelaySeconds: 300, timeoutSeconds: 30.
+  ## Timing-only settings keep the tcpSocket check; a handler (httpGet, tcpSocket, exec, grpc) replaces it.
   livenessProbe: {}
+  #  httpGet:
+  #    path: /health
+  #    port: app-port
+  #  periodSeconds: 10
+  #  timeoutSeconds: 5
+  #  failureThreshold: 3
+
+  ## Readiness and startup probes are rendered as-is and only when set.
+  readinessProbe: {}
+  #  httpGet:
+  #    path: /health
+  #    port: app-port
+  #  periodSeconds: 10
+  startupProbe: {}
+  #  httpGet:
+  #    path: /health
+  #    port: app-port
+  #  periodSeconds: 5
+  #  failureThreshold: 24
 
   cronjob:
     enabled: false
