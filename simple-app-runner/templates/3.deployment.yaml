@@ -154,14 +154,25 @@ spec:
 {{- end }}
 {{- end }}
 {{- end }}
+{{- $liveness := .Values.app.livenessProbe | default dict }}
           livenessProbe:
+{{- if not (or (hasKey $liveness "httpGet") (hasKey $liveness "tcpSocket") (hasKey $liveness "exec") (hasKey $liveness "grpc")) }}
             tcpSocket:
               port: app-port
-{{- if .Values.app.livenessProbe }}
-{{ toYaml .Values.app.livenessProbe | indent 12 }}
+{{- end }}
+{{- if $liveness }}
+{{ toYaml $liveness | indent 12 }}
 {{- else }}
             initialDelaySeconds: 300
             timeoutSeconds: 30
+{{- end }}
+{{- if .Values.app.readinessProbe }}
+          readinessProbe:
+{{ toYaml .Values.app.readinessProbe | indent 12 }}
+{{- end }}
+{{- if .Values.app.startupProbe }}
+          startupProbe:
+{{ toYaml .Values.app.startupProbe | indent 12 }}
 {{- end }}
 {{- if or .Values.app.secrets (or .Values.app.configs .Values.app.volumes) }}
       volumes:
